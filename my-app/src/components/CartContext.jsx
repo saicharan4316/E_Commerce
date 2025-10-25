@@ -1,0 +1,114 @@
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const CartContext = createContext();
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+
+export const CartProvider = ({ children, state_user }) => {
+  const [cart, setCart] = useState([]);
+  
+  const user = state_user || JSON.parse(localStorage.getItem("user"));
+  const token = state_user?.token || localStorage.getItem("token");
+  const customerId = user?.customer_id;
+  const isAuthenticated = useMemo(() => !!token, [token]);
+
+ 
+  const fetchCart = async () => {
+    if (!token || !customerId) return;
+    try {
+      const res = await axios.get(`${API_URL_3000}/cart/${encodeURIComponent(customerId)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+  
+      const cartData = Array.isArray(res.data) ? res.data : [];
+      const decodedCart = cartData.map(item => ({
+        customer_id: item.customer_id,
+        product_id: item.product_id,
+        quantity: Number(item.quantity),
+        name: item.name,
+        price: item.price,
+      }));
+
+      setCart(decodedCart);
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+      toast.error("Failed to fetch cart");
+    }
+  };
+
+  useEffect(() => {
+    if (token) fetchCart();
+  }, [token]);
+
+  const addToCart = async (product) => {
+    if (!isAuthenticated) {
+      toast.warning("Please login to add items to cart");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL_3000}/cart`,
+        { product_id: product.product_id, customer_id: customerId, quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCart(prev => {
+        const idx = prev.findIndex(i => i.product_id === product.product_id);
+        if (idx > -1) {
+          return prev.map((i, index) =>
+            index === idx ? { ...i, quantity: i.quantity + 1 } : i
+          );
+        }
+        return [...prev, { ...product, quantity: 1 }];
+      });
+
+      toast.success(`${product.name} added to cart`);
+    } catch (err) {
+      toast.error("Failed to add item to cart");
+    }
+  };
+
+  const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+
+    try {
+      await axios.delete(`${API_URL_3000}/cart/${encodeURIComponent(productId)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCart(prev => prev.filter(item => item.product_id !== productId));
+      toast.success("Product removed from cart");
+    } catch (err) {
+      toast.error("Failed to remove product");
+    }
+  };
+
+
+  const clearCart = async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      await axios.delete(`${API_URL_3000}/cart/clear/${encodeURIComponent(customerId)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCart([]);
+      toast.success("Cart cleared");
+    } catch (err) {
+      toast.error("Failed to clear cart");
+    }
+  };
+
+  return (
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, clearCart, isAuthenticated }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export const useCart = () => useContext(CartContext);

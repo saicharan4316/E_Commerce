@@ -1,0 +1,28 @@
+footer {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+footer p {
+  margin: 0;
+}
+
+
+@media (max-width: 768px) {
+  footer {
+    font-size: 0.85rem;
+    padding: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    font-size: 0.8rem;
+    padding: 0.8rem;
+  }
+}

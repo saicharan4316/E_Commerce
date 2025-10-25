@@ -1,0 +1,48 @@
+.hero {
+  text-align: center;
+  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  padding: 4rem 1rem;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.btn-primary {
+  background: #111;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: #333;
+}
+
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+}

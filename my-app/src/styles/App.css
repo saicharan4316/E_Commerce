@@ -1,0 +1,18 @@
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  color: #222;
+}
+
+.page {
+  padding: 2rem;
+  text-align: center;
+}
+.positom{
+  position: absolute;
+  left: 20%;
+  text-align: center ;
+  justify-content: center;
+}

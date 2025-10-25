@@ -2,6 +2,13 @@ import ProductCard from "./ProductCard";
 import "../styles/product.css";
 
 export default function ProductList({ products, page, setPage }) {
+  if (!products || !Array.isArray(products)) {
+    return <div>Loading products...</div>;
+  }
+
+  if (products.length === 0) {
+    return <div>No products found.</div>;
+  }
   return (
     <div>
       <div className="product-grid">

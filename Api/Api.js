@@ -18,7 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Database setup
 const db = new Client({
-  connectionString: process.env.DATA_BASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
@@ -234,12 +234,20 @@ app.get("/products", async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
     const offset = parseInt(req.query.offset) || 0;
-    const result = await db.query("SELECT * FROM fetch_products($1,$2)", [limit, offset]);
+    
+
+    const result = await db.query(
+      "SELECT * FROM products ORDER BY product_id LIMIT $1 OFFSET $2",
+      [limit, offset]
+    );
+    
     res.json(result.rows);
   } catch (error) {
+    console.error('Error fetching products:', error);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get("/products/Display_product", async (req, res) => {
   try {

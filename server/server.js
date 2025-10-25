@@ -354,12 +354,32 @@ const verifyToken = (req) => {
 app.post("/cart", async (req, res) => {
   try {
     verifyToken(req);
-    const apiRes = await axios.post(`${API_URL}/cart`, req.body, { headers: { Authorization: req.headers.authorization } });
+    
+    console.log('🔄 Proxying cart request to API...');
+    
+    const apiRes = await axios.post(
+      `${API_URL}/cart`, 
+      req.body, 
+      { 
+        headers: { Authorization: req.headers.authorization },
+        timeout: 30000  // ✅ 30 second timeout for Neon
+      }
+    );
+    
+    console.log('✅ API response received');
     res.json(apiRes.data);
+    
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    console.error('❌ Cart proxy error:', err.message);
+    
+    if (err.code === 'ECONNABORTED') {
+      res.status(504).json({ message: 'Request timed out' });
+    } else {
+      res.status(500).json({ message: err.message });
+    }
   }
 });
+
 
 app.delete("/cart/:productId", async (req, res) => {
   try {

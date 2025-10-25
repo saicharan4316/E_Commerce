@@ -78,30 +78,62 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
+        const name = profile.displayName;
         let existingUser = null;
 
         try {
-          const response = await axios.get(`${API_URL}/check_user?email=${email}`);
+          const response = await axios.get(
+            `${API_URL}/check_user?email=${email}`,
+            {
+              timeout: 30000,
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
           existingUser = response.data;
         } catch (err) {
-          if (!(err.response && err.response.status === 404)) throw err;
+          if (err.response && err.response.status === 404) {
+            console.log('User not found, will create new user');
+          } else if (err.code === 'ECONNABORTED') {
+            return done(new Error('API timeout - server waking up. Try again in 30 seconds.'));
+          } else {
+            throw err;
+          }
         }
-
         if (existingUser && existingUser.email) {
           const token = jwt.sign(
-            { email: existingUser.email, name: existingUser.name, id: existingUser.id },
+            {
+              email: existingUser.email,
+              name: existingUser.name,
+              customer_id: existingUser.customer_id || existingUser.id
+            },
             JWT_SECRET,
             { expiresIn: "24h" }
           );
           return done(null, { ...existingUser, token });
         }
-
         const dummyPassword = bcrypt.hashSync(Math.random().toString(36).slice(-8), 10);
-        const newUser = { googleId: profile.id, name: profile.displayName, email, password: dummyPassword };
-        const createdUser = await axios.post(`${API_URL}/user`, newUser);
+        const newUser = {
+          googleId: profile.id,
+          name: name,
+          email: email,
+          password: dummyPassword
+        };
+
+        const createdUser = await axios.post(
+          `${API_URL}/user`,
+          newUser,
+          {
+            timeout: 30000,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
 
         const token = jwt.sign(
-          { email: createdUser.data.email, name: createdUser.data.name, googleId: createdUser.data.googleId },
+          {
+            email: createdUser.data.email,
+            name: createdUser.data.name,
+            customer_id: createdUser.data.customer_id || createdUser.data.id
+          },
           JWT_SECRET,
           { expiresIn: "24h" }
         );
@@ -122,13 +154,24 @@ passport.deserializeUser((user, cb) => cb(null, user));
 // ----------------------
 app.get("/login_with_google", passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account" }));
 
-app.get(
-  "/login_with_google/authentication",
-  passport.authenticate("google", { session: false, failureRedirect: "/login_failed" }),
+app.get('/login_with_google/authentication',
+  passport.authenticate('google', { 
+    failureRedirect: `${FRONTEND_URL}/login`,
+    session: false 
+  }),
   (req, res) => {
-    const { token, ...user } = req.user;
-    const encodedUser = encodeURIComponent(JSON.stringify(user));
-    res.redirect(`${FRONTEND_URL}/google_callback?token=${token}&user=${encodedUser}`);
+    try {
+      const token = req.user.token;
+      const userData = encodeURIComponent(JSON.stringify({
+        email: req.user.email,
+        name: req.user.name,
+        customer_id: req.user.customer_id || req.user.id
+      }));
+    
+      res.redirect(`${FRONTEND_URL}/google_callback?token=${token}&user=${userData}`);
+    } catch (error) {
+      res.redirect(`${FRONTEND_URL}/login?error=auth_failed`);
+    }
   }
 );
 

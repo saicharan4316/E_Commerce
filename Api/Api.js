@@ -18,15 +18,44 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Database setup
 const db = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_AkNBJ8IaU1hu@ep-nameless-scene-a42yp9r5-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
+  connectionString: process.env.DATA_BASE_URL,
   ssl: {
     rejectUnauthorized: false
   },
-max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-  allowExitOnIdle: false
+ 
+  max: 10,                        
+  idleTimeoutMillis: 20000,      
+  connectionTimeoutMillis: 30000, 
+  statement_timeout: 30000,      
+  query_timeout: 30000,         
+  keepAlive: true,                
+  keepAliveInitialDelayMillis: 10000
 });
+
+const queryWithRetry = async (text, params, retries = 2) => {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const result = await db.query(text, params);
+      return result;
+    } catch (err) {
+      console.error(`Query attempt ${i + 1} failed:`, err.message);
+ 
+      if (i < retries && (
+        err.code === 'ECONNRESET' || 
+        err.code === '57P01' ||
+        err.message.includes('Connection terminated') ||
+        err.message.includes('Connection closed')
+      )) {
+        console.log('Retrying query after 2 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        continue;
+      }
+     
+      throw err;
+    }
+  }
+};
+
 db.on('error', (err) => {
   console.error('Database pool error:', err);
 });
@@ -325,52 +354,64 @@ app.get("/api/filter/products", async (req, res) => {
 
 app.post("/cart", async (req, res) => {
   try {
-    verifyToken(req);
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ message: "No authorization header" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, JWT_SECRET);
+
     const { customer_id, product_id, quantity } = req.body;
 
     console.log('Cart request:', { customer_id, product_id, quantity });
 
     if (!customer_id || !product_id || !quantity) {
-      return res.status(400).json({ 
-        message: 'Missing required fields',
-        received: { customer_id, product_id, quantity }
-      });
+      return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const exists = await db.query(
+    // ✅ Use retry logic for Neon cold starts
+    const existingItem = await queryWithRetry(
       "SELECT * FROM cart WHERE customer_id = $1 AND product_id = $2",
       [customer_id, product_id]
     );
 
-    if (exists.rows.length > 0) {
-
-      await db.query(
+    if (existingItem.rows.length > 0) {
+      await queryWithRetry(
         "UPDATE cart SET quantity = quantity + $1 WHERE customer_id = $2 AND product_id = $3",
         [quantity, customer_id, product_id]
       );
-
+      console.log('✅ Updated existing cart item');
     } else {
-
-      await db.query(
+      await queryWithRetry(
         "INSERT INTO cart (customer_id, product_id, quantity) VALUES ($1, $2, $3)",
         [customer_id, product_id, quantity]
       );
+      console.log('✅ Inserted new cart item');
     }
 
-    const cartResult = await db.query(
-      "SELECT * FROM cart WHERE customer_id = $1", 
+    const cart = await queryWithRetry(
+      `SELECT c.*, p.name, p.price, p.image_url 
+       FROM cart c 
+       JOIN products p ON c.product_id = p.product_id 
+       WHERE c.customer_id = $1`,
       [customer_id]
     );
 
-    res.json({ 
-      success: true, 
-      cart: cartResult.rows,
-      message: 'Item added to cart successfully'
-    });
+    console.log('✅ Cart updated successfully. Items:', cart.rows.length);
+
+    res.json({ success: true, cart: cart.rows });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('❌ Cart POST error:', err.message);
+    console.error('Error details:', err);
+    res.status(500).json({ 
+      message: 'Failed to add item to cart',
+      error: err.message 
+    });
   }
 });
+
 
 
 app.delete("/cart/:productId", async (req, res) => {

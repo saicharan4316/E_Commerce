@@ -311,40 +311,52 @@ app.get("/api/filter/products", async (req, res) => {
 app.post("/cart", async (req, res) => {
   try {
     verifyToken(req);
+    const { customer_id, product_id, quantity } = req.body;
 
-    const customer_id = decodeURIComponent(req.body.customer_id);
-    const product_id = decodeURIComponent(req.body.product_id);
-    const quantity = parseInt(decodeURIComponent(req.body.quantity), 10);
+    console.log('Cart request:', { customer_id, product_id, quantity });
+
+    if (!customer_id || !product_id || !quantity) {
+      return res.status(400).json({ 
+        message: 'Missing required fields',
+        received: { customer_id, product_id, quantity }
+      });
+    }
 
     const exists = await db.query(
-      "SELECT * FROM cart WHERE customer_id=$1 AND product_id=$2",
+      "SELECT * FROM cart WHERE customer_id = $1 AND product_id = $2",
       [customer_id, product_id]
     );
 
     if (exists.rows.length > 0) {
+
       await db.query(
-        "UPDATE cart SET quantity = quantity + $1 WHERE customer_id=$2 AND product_id=$3",
+        "UPDATE cart SET quantity = quantity + $1 WHERE customer_id = $2 AND product_id = $3",
         [quantity, customer_id, product_id]
       );
+
     } else {
+
       await db.query(
-        "INSERT INTO cart (customer_id, product_id, quantity) VALUES ($1,$2,$3)",
+        "INSERT INTO cart (customer_id, product_id, quantity) VALUES ($1, $2, $3)",
         [customer_id, product_id, quantity]
       );
     }
 
-    const resultRows = await db.query("SELECT * FROM cart WHERE customer_id=$1", [customer_id]);
-    const encoded = resultRows.rows.map(r => ({
-      customer_id: encodeURIComponent(r.customer_id),
-      product_id: encodeURIComponent(r.product_id),
-      quantity: encodeURIComponent(String(r.quantity))
-    }));
+    const cartResult = await db.query(
+      "SELECT * FROM cart WHERE customer_id = $1", 
+      [customer_id]
+    );
 
-    res.json({ success: true, cart: encoded });
+    res.json({ 
+      success: true, 
+      cart: cartResult.rows,
+      message: 'Item added to cart successfully'
+    });
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
+
 
 app.delete("/cart/:productId", async (req, res) => {
   try {

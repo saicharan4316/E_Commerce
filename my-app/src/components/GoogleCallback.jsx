@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 
 export default function GoogleCallback({ setUser }) {
   const navigate = useNavigate();

@@ -53,6 +53,7 @@ app.use(passport.initialize());
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://e-commerce-chi-three-69.vercel.app',
   process.env.FRONTEND_URL
 ].filter(Boolean);
 

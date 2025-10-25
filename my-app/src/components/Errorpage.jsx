@@ -1,4 +1,4 @@
-import "../styles/ErrorPage.css";
+import "../styles/Errorpage.css";
 
 export default function ErrorPage({ error, resetErrorBoundary }) {
   return (

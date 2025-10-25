@@ -18,7 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Database setup
 const db = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_AkNBJ8IaU1hu@ep-nameless-scene-a42yp9r5-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
   ssl: {
     rejectUnauthorized: false
   }

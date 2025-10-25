@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { Client } from "pg";
+import { Pool } from "pg";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -17,13 +17,28 @@ const PORT = process.env.API_PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Database setup
-const db = new Client({
+const db = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_AkNBJ8IaU1hu@ep-nameless-scene-a42yp9r5-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
   ssl: {
     rejectUnauthorized: false
+  },
+max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+  allowExitOnIdle: false
+});
+db.on('error', (err) => {
+  console.error('Database pool error:', err);
+});
+
+db.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Database connection failed:', err);
+  } else {
+    console.log(' Database connected at:', res.rows[0].now);
   }
 });
-db.connect();
+
 
 const verifyToken = (req) => {
   const authHeader = req.headers.authorization;

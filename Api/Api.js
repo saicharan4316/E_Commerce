@@ -18,7 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Database setup
 const db = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATA_BASE_URL,
   ssl: {
     rejectUnauthorized: false
   }

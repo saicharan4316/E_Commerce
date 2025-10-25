@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/profile.css";
+import "../styles/Profile.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";

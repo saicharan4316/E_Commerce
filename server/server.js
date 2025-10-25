@@ -18,8 +18,14 @@ const redisClient = new Redis({
 
 const app = express();
 const port = process.env.PORT || 3000;
-const API_URL = process.env.API_URL;
-const FRONTEND_URL = process.env.FRONTEND_URL;
+const API_URL = process.env.API_URL || 'https://e-commerce-api-cb8d.onrender.com';
+
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+app.get('/auth/google/callback', async (req, res) => {
+  res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}`);
+});
+
 const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
 // Rate Limiter Middleware
@@ -44,7 +50,16 @@ const rateLimiter = (limit, window) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(passport.initialize());
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,

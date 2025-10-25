@@ -12,7 +12,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Signup({ setUser }) {
   const navigate = useNavigate();

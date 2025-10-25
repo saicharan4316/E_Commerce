@@ -4,7 +4,7 @@ import ProductList from "./ProductList";
 import { useCart } from "./CartContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com ';
 
 export default function Shop() {
   const [minPrice, setMinPrice] = useState("");

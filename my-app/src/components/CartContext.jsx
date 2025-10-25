@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const CartContext = createContext();
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export const CartProvider = ({ children, state_user }) => {
   const [cart, setCart] = useState([]);

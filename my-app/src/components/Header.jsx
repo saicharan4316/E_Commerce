@@ -10,7 +10,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import "../styles/header.css";
 
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Header() {
   

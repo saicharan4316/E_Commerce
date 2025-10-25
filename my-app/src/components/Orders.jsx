@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Orders.css";
 import { toast } from "react-toastify";
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);

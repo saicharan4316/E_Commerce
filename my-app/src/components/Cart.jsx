@@ -5,9 +5,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/cart.css";
 import { toast } from "react-toastify";
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
-const API_URL_5000 = import.meta.env.VITE_API_URL_5000;
-const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
+const API_URL_5000 = import.meta.env.VITE_API_URL_5000 || 'https://e-commerce-api-cb8d.onrender.com';
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_RUrbJhzKP7pZQE';
 export default function Cart() {
   const { cart, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();

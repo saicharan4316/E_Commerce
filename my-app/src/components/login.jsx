@@ -4,7 +4,7 @@ import { TextField, Button, Box, Typography, IconButton, InputAdornment } from "
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
-const API_URL_3000 = import.meta.env.VITE_API_URL_3000;
+const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Login({ setUser }) {
   const [user, setLocalUser] = useState({ email: "", password: "" });

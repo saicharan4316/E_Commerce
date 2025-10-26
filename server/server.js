@@ -209,7 +209,7 @@ const token = microUser.token || jwt.sign(
 
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Login failed";
+    const message = error.response?.data?.message || error.response?.data || "Login failed";
     res.status(status).json({ message });
   }
 });

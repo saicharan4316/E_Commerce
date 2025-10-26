@@ -29,8 +29,10 @@ export default function Login({ setUser }) {
     if (!validate()) return;
 
     try {
+      console.log(user.email,user.password);
       const response = await axios.post(`${API_URL_3000}/login`, { email: user.email.trim().toLowerCase(), password: user.password });
       const { token, user: userData } = response.data;
+      console.log(token,user);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
       setUser({ ...userData, token });

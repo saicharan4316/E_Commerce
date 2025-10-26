@@ -66,7 +66,7 @@ app.use(cors({
     return callback(null, true);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -119,6 +119,7 @@ passport.use(
           );
           return done(null, { ...existingUser, token });
         }
+        console.log(existingUser)
         const dummyPassword = bcrypt.hashSync(Math.random().toString(36).slice(-8), 10);
         const newUser = {
           googleId: profile.id,
@@ -174,7 +175,7 @@ app.get('/login_with_google/authentication',
         email: req.user.email,
         name: req.user.name,
         phone:req.user.phone,
-        addesss:req.user.address,
+        address:req.user.address,
         customer_id: req.user.customer_id || req.user.id
       }));
     

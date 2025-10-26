@@ -3,7 +3,7 @@ import "../styles/Profile.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material/CircularProgress";
+import  CircularProgress  from "@mui/material/CircularProgress";
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com' ;
 
 export default function ProfileEdit({ user, setUser }) {

@@ -173,6 +173,8 @@ app.get('/login_with_google/authentication',
       const userData = encodeURIComponent(JSON.stringify({
         email: req.user.email,
         name: req.user.name,
+        phone:req.user.phone,
+        addesss:req.user.addesss,
         customer_id: req.user.customer_id || req.user.id
       }));
     
@@ -279,7 +281,7 @@ app.post("/send-otp", rateLimiter(2, 60), async (req, res) => {
   }
 });
 
-app.patch("/profile/update-password", rateLimiter(3, 300), async (req, res) => {
+app.patch("/profile/update-password", rateLimiter(10, 150), async (req, res) => {
   try {
     const token = req.headers.authorization;
     if (!token) return res.status(401).json({ message: "No token" });

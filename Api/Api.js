@@ -523,7 +523,7 @@ app.post("/create-order", async (req, res) => {
     }
 
     const { order_id, amount, status, product_ids, order_date } = req.body;
-
+console.log(order_id, amount, status, product_ids, order_date);
     await db.query(
       "INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) VALUES ($1, $2, $3, $4, $5)",
       [order_id, customerId, order_date, status, amount]
@@ -535,7 +535,7 @@ app.post("/create-order", async (req, res) => {
         [order_id, prodId, customerId]
       );
     }
-
+console.log("ORDER SUCCESSFULL");
     res.status(201).json({ message: "Order and items stored successfully!" });
   } catch (error) {
 

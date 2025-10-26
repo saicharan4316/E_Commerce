@@ -530,17 +530,18 @@ console.log(order_id, amount, status, product_ids, order_date);
       [order_id, customerId, order_date, status, amount]
     );
 console.log("order inserted in orders table");
-    for (const prodId of product_ids) {
+    for (let prodId of product_ids) {
       await db.query(
         "INSERT INTO order_items (order_id, product_id, customer_id) VALUES ($1, $2, $3)",
         [order_id, prodId, customerId]
       );
+      console.log("product inserted into order_items ")
     }
 console.log("ORDER SUCCESSFULL");
     res.status(201).json({ message: "Order and items stored successfully!" });
   } catch (error) {
 
-    res.status(500).json({ message: "Error storing order", error: error.message });
+    res.status(500).json({ message: "Error storing order", error: error });
   }
 });
 

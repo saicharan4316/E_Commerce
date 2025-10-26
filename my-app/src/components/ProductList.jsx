@@ -1,14 +1,24 @@
 import ProductCard from "./ProductCard";
+import CircularProgress from '@mui/material/CircularProgress';
 import "../styles/product.css";
 
 export default function ProductList({ products, page, setPage }) {
   if (!products || !Array.isArray(products)) {
-    return <div>Loading products...</div>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   if (products.length === 0) {
-    return <div>No products found.</div>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+        <CircularProgress />
+      </div>
+    );
   }
+
   return (
     <div>
       <div className="product-grid">
@@ -17,7 +27,6 @@ export default function ProductList({ products, page, setPage }) {
         ))}
       </div>
 
-     
       <div
         className="pagination"
         style={{
@@ -47,3 +56,4 @@ export default function ProductList({ products, page, setPage }) {
     </div>
   );
 }
+

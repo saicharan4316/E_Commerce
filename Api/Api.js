@@ -525,12 +525,14 @@ console.log(customerId);
 
     const { order_id, amount, status, product_ids, order_date } = req.body;
 console.log(order_id, amount, status, product_ids, order_date);
+console.log('typeof product_ids:', typeof product_ids, 'isArray:', Array.isArray(product_ids), product_ids);
     await db.query(
       "INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) VALUES ($1, $2, $3, $4, $5)",
       [order_id, customerId, order_date, status, amount]
     );
 console.log("order inserted in orders table");
     for (let prodId of product_ids) {
+      console.log(typeof prodId)
       await db.query(
         "INSERT INTO order_items (order_id, product_id, customer_id) VALUES ($1, $2, $3)",
         [order_id, prodId, customerId]

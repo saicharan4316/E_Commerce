@@ -228,7 +228,6 @@ console.log(email,newPassword);
       if (!otpStore[email]) {
         return res.status(400).json({ message: "OTP not verified" });
       }
-
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await db.query("UPDATE customers SET password=$1 WHERE email=$2", [hashedPassword, email]);
 
@@ -513,7 +512,7 @@ app.post("/create-order", async (req, res) => {
   try {
     const decoded = await verifyJwt(token, JWT_SECRET);
     let customerId = decoded.customer_id;
-
+console.log(customerId);
     if (!customerId) {
       const userIdentifier = decoded.email || decoded.name;
       const result = await db.query(

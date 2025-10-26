@@ -4,7 +4,7 @@ import { useCart } from "./CartContext";
 import axios from "axios";
 import "../styles/Productview.css";
 import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material/CircularProgress";
+import  CircularProgress  from "@mui/material/CircularProgress";
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 const API_URL_5000 = import.meta.env.VITE_API_URL_5000 || 'https://e-commerce-api-cb8d.onrender.com';
 

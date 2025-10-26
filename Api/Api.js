@@ -540,7 +540,7 @@ console.log("order inserted in orders table");
 console.log("ORDER SUCCESSFULL");
     res.status(201).json({ message: "Order and items stored successfully!" });
   } catch (error) {
-
+console.log(error);
     res.status(500).json({ message: "Error storing order", error: error });
   }
 });

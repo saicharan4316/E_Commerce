@@ -44,7 +44,7 @@ console.log(array);
                 customer_id: JSON.parse(localStorage.getItem("user")).customer_id,
                 amount: total,
                 status: "paid",
-                product_ids: cart.map(item => item.product_id),
+                product_ids: cart.map(item => parseInt(item.product_id)),
                 order_date: new Date()
               }, { headers: { Authorization: `Bearer ${token}` } });
               toast.success("Order Placed Succesfully")

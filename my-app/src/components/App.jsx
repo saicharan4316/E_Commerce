@@ -11,8 +11,8 @@ import Cart from "./Cart";
 import Footer from "./Footer";
 import Login from "./login";
 import Signup from "./Signup";
-import About from "./About";
-import Contact from "./Contact";
+import PrivacyPolicy from "./PrivacyPolicy";
+import TermsofService from "./TermsofService";
 import Explore from "./Explore";
 import ProductView from "./Productview";
 import ProfileView from "./Profile";
@@ -98,8 +98,8 @@ export default function App({ user, setUser }) {
                 <Route path="/profile/edit" element={<ProfileEdit user={user} setUser={setUser} />} />
                 <Route path="/deals" element={<Deals />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsofService />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/forgot_password" element={<ResetPassword user={user} />} />
                 <Route path="/orders" element={<Orders />} />

@@ -22,6 +22,9 @@ const API_URL = process.env.API_URL || 'https://e-commerce-api-cb8d.onrender.com
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
+// FOR CORN JOB CHECK
+app.get('/ping', (req, res) => res.send("OK"));
+
 app.get('/auth/google/callback', async (req, res) => {
   res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}`);
 });
@@ -361,24 +364,19 @@ const verifyToken = (req) => {
 app.post("/cart", async (req, res) => {
   try {
     verifyToken(req);
-    
-    console.log('🔄 Proxying cart request to API...');
-    
+        
     const apiRes = await axios.post(
       `${API_URL}/cart`, 
       req.body, 
       { 
         headers: { Authorization: req.headers.authorization },
-        timeout: 30000  // ✅ 30 second timeout for Neon
+        timeout: 30000 
       }
     );
-    
-    console.log('✅ API response received');
+
     res.json(apiRes.data);
     
-  } catch (err) {
-    console.error('❌ Cart proxy error:', err.message);
-    
+  } catch (err) {    
     if (err.code === 'ECONNABORTED') {
       res.status(504).json({ message: 'Request timed out' });
     } else {

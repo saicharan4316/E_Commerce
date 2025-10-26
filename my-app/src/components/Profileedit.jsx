@@ -3,7 +3,7 @@ import "../styles/Profile.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { CircularProgress } from "@mui/material/CircularProgress";
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com' ;
 
 export default function ProfileEdit({ user, setUser }) {
@@ -26,7 +26,14 @@ console.log(user);
       });
     }
   }, [user]);
-if (!user) return <p>Loading profile...</p>;
+if (!user) {
+  return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
+        <CircularProgress />
+        <span style={{ marginTop: 10 }}>Loading Profile...</span>
+      </div>
+    );
+}
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

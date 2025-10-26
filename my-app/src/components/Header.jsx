@@ -97,8 +97,8 @@ export default function Header() {
       </ul></div>}
       {showSettings && <div className="settings-panel"><ul>
         <li onClick={() => setShowSettings(false)}><ArrowBackIcon /> Close</li>
-        <li onClick={() => { setShowSettings(false); navigate("/about"); }}>About</li>
-        <li onClick={() => { setShowSettings(false); navigate("/contact"); }}>Contact Us</li>
+        <li onClick={() => { setShowSettings(false); navigate("/privacy"); }}>Privacy</li>
+        <li onClick={() => { setShowSettings(false); navigate("/terms"); }}>Terms</li>
         <li onClick={() => { setShowSettings(false); navigate("/explore"); }}>Explore</li>
         <li onClick={handleLogout}>Logout</li>
       </ul></div>}

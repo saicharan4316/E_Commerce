@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Orders.css";
 import { toast } from "react-toastify";
+import CircularProgress from '@mui/material/CircularProgress';
+
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Orders() {
@@ -29,7 +31,14 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
-  if (loading) return <p>Loading orders...</p>;
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
+        <CircularProgress />
+        <span style={{ marginTop: 10 }}>Loading orders...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="orders-container">

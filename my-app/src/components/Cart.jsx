@@ -1,4 +1,3 @@
-import React from "react";
 import Button from '@mui/material/Button';
 import { useCart } from "./CartContext";
 import axios from "axios";
@@ -19,8 +18,6 @@ export default function Cart() {
     if (cart.length <= 0) return toast.error("Your Cart Is Empty");
     const token = localStorage.getItem("token");
     if (!token) { toast.error("Please login first!"); navigate("/login"); return; }
-let array=cart.map(item => item.product_id)
-console.log(array);
     try {
       const { data } = await axios.post(`${API_URL_3000}/create-order`, { amount: total }, { headers: { Authorization: `Bearer ${token}` } });
       const { order } = data;

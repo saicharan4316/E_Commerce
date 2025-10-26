@@ -1,11 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Profile.css"
+import "../styles/Profile.css";
+import { CircularProgress } from "@mui/material/CircularProgress";
  function ProfileView({ user }) {
   const navigate = useNavigate();
 
   if (!user) {
-    return <p>Loading user profile...</p>;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
+        <CircularProgress />
+        <span style={{ marginTop: 10 }}>Loading Profile...</span>
+      </div>
+    );
   }
 
   return (

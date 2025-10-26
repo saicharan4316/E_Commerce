@@ -16,7 +16,8 @@ app.use((err, req, res, next) => {
   console.error('Global Error Handler:', err.stack || err);
   res.status(500).json({ message: "Internal Server Error" });
 });
-
+// FOR CORN JOB CHECK
+app.get('/ping', (req, res) => res.send("OK"));
 const PORT = process.env.API_PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 
@@ -43,7 +44,6 @@ const queryWithRetry = async (text, params, retries = 2) => {
       return result;
     } catch (err) {
       console.error(`Query attempt ${i + 1} failed:`, err.message);
- 
       if (i < retries && (
         err.code === 'ECONNRESET' || 
         err.code === '57P01' ||
@@ -54,7 +54,6 @@ const queryWithRetry = async (text, params, retries = 2) => {
         await new Promise(resolve => setTimeout(resolve, 2000));
         continue;
       }
-     
       throw err;
     }
   }
@@ -120,7 +119,6 @@ app.post("/user", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
     const result = await db.query(
       "SELECT * FROM customers WHERE LOWER(email) = $1",
       [email]
@@ -228,7 +226,6 @@ app.patch("/api/profile/update-password", async (req, res) => {
     try {
       const email = decodeURIComponent(req.body.email);
       const newPassword = decodeURIComponent(req.body.password);
-console.log(email,newPassword);
       if (!otpStore[email]) {
         return res.status(400).json({ message: "OTP not verified" });
       }
@@ -369,13 +366,10 @@ app.post("/cart", async (req, res) => {
 
     const { customer_id, product_id, quantity } = req.body;
 
-    console.log('Cart request:', { customer_id, product_id, quantity });
-
     if (!customer_id || !product_id || !quantity) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // ✅ Use retry logic for Neon cold starts
     const existingItem = await queryWithRetry(
       "SELECT * FROM cart WHERE customer_id = $1 AND product_id = $2",
       [customer_id, product_id]
@@ -386,13 +380,11 @@ app.post("/cart", async (req, res) => {
         "UPDATE cart SET quantity = quantity + $1 WHERE customer_id = $2 AND product_id = $3",
         [quantity, customer_id, product_id]
       );
-      console.log('✅ Updated existing cart item');
     } else {
       await queryWithRetry(
         "INSERT INTO cart (customer_id, product_id, quantity) VALUES ($1, $2, $3)",
         [customer_id, product_id, quantity]
       );
-      console.log('✅ Inserted new cart item');
     }
 
     const cart = await queryWithRetry(
@@ -403,12 +395,9 @@ app.post("/cart", async (req, res) => {
       [customer_id]
     );
 
-    console.log('✅ Cart updated successfully. Items:', cart.rows.length);
-
     res.json({ success: true, cart: cart.rows });
 
   } catch (err) {
-    console.error('❌ Cart POST error:', err.message);
     console.error('Error details:', err);
     res.status(500).json({ 
       message: 'Failed to add item to cart',
@@ -516,7 +505,6 @@ app.post("/create-order", async (req, res) => {
   try {
     const decoded = await verifyJwt(token, JWT_SECRET);
     let customerId = decoded.customer_id;
-console.log(customerId);
     if (!customerId) {
       const userIdentifier = decoded.email || decoded.name;
       const result = await db.query(
@@ -528,22 +516,16 @@ console.log(customerId);
     }
 
     const { order_id, amount, status, product_ids, order_date } = req.body;
-console.log(order_id, amount, status, product_ids, order_date);
-console.log('typeof product_ids:', typeof product_ids, 'isArray:', Array.isArray(product_ids), product_ids);
     await db.query(
       "INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) VALUES ($1, $2, $3, $4, $5)",
       [order_id, customerId, order_date, status, amount]
     );
-console.log("order inserted in orders table");
     for (let prodId of product_ids) {
-      console.log(typeof prodId)
       await db.query(
         "INSERT INTO order_items (order_id, product_id, customer_id) VALUES ($1, $2, $3)",
         [order_id, prodId, customerId]
       );
-      console.log("product inserted into order_items ")
     }
-console.log("ORDER SUCCESSFULL");
     res.status(201).json({ message: "Order and items stored successfully!" });
   } catch (error) {
 console.log(error);

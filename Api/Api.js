@@ -211,11 +211,12 @@ app.post("/send-otp", (req, res) => {
     const email = decodeURIComponent(req.body.email);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = otp;
+    console.log(otp)
     res.json({ otp });
   });
 });
 
-app.patch("/profile/update-password", async (req, res) => {
+app.patch("/api/profile/update-password", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "No token" });
 
@@ -235,6 +236,7 @@ console.log(email,password);
       res.json({ message: "Password updated successfully" });
     } catch (error) {
       res.status(500).json({ message: error.message });
+      console.log(error.message);
     }
   });
 });

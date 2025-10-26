@@ -286,7 +286,7 @@ app.patch("/profile/update-password",  async (req, res) => {
     const token = req.headers.authorization;
     if (!token) return res.status(401).json({ message: "No token" });
 console.log(req.body);
-    const apiRes = await axios.patch(`${API_URL}/profile/update-password`, req.body, { headers: { Authorization: token } });
+    const apiRes = await axios.patch(`${API_URL}/api/profile/update-password`, req.body, { headers: { Authorization: token } });
     res.json(apiRes.data);
   } catch (err) {
     res.status(err.response?.status || 500).json({ message: err.message });

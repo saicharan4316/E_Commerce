@@ -224,7 +224,7 @@ app.patch("/api/profile/update-password", async (req, res) => {
     try {
       const email = decodeURIComponent(req.body.email);
       const newPassword = decodeURIComponent(req.body.password);
-console.log(email,password);
+console.log(email,newPassword);
       if (!otpStore[email]) {
         return res.status(400).json({ message: "OTP not verified" });
       }

@@ -58,7 +58,7 @@ export default function ResetPassword({ user }) {
       toast.success("Password Reset Successful");
       navigate("/profile/edit");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error);
     }
   };
 

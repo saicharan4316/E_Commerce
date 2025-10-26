@@ -46,6 +46,10 @@ const rateLimiter = (limit, window) => {
     }
   };
 };
+app.use((err, req, res, next) => {
+  console.error('Global Error Handler:', err.stack || err);
+  res.status(500).json({ message: "Internal Server Error" });
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -67,7 +71,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization','Application']
 }));
 
 const razorpay = new Razorpay({

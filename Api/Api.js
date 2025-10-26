@@ -12,6 +12,10 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((err, req, res, next) => {
+  console.error('Global Error Handler:', err.stack || err);
+  res.status(500).json({ message: "Internal Server Error" });
+});
 
 const PORT = process.env.API_PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";

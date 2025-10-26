@@ -223,7 +223,7 @@ app.patch("/profile/update-password", async (req, res) => {
     try {
       const email = decodeURIComponent(req.body.email);
       const newPassword = decodeURIComponent(req.body.password);
-
+console.log(email,password);
       if (!otpStore[email]) {
         return res.status(400).json({ message: "OTP not verified" });
       }
@@ -234,7 +234,7 @@ app.patch("/profile/update-password", async (req, res) => {
       delete otpStore[email];
       res.json({ message: "Password updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: error.message });
     }
   });
 });
@@ -528,7 +528,7 @@ console.log(order_id, amount, status, product_ids, order_date);
       "INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) VALUES ($1, $2, $3, $4, $5)",
       [order_id, customerId, order_date, status, amount]
     );
-
+console.log("order inserted in orders table");
     for (const prodId of product_ids) {
       await db.query(
         "INSERT INTO order_items (order_id, product_id, customer_id) VALUES ($1, $2, $3)",

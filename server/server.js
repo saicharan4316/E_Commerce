@@ -174,7 +174,7 @@ app.get('/login_with_google/authentication',
         email: req.user.email,
         name: req.user.name,
         phone:req.user.phone,
-        addesss:req.user.addesss,
+        addesss:req.user.address,
         customer_id: req.user.customer_id || req.user.id
       }));
     
@@ -268,7 +268,7 @@ app.put("/profile/update", rateLimiter(5, 60), async (req, res) => {
   }
 });
 
-app.post("/send-otp", rateLimiter(2, 60), async (req, res) => {
+app.post("/send-otp", rateLimiter(3, 60), async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) return res.status(401).json({ message: "No token" });
@@ -281,11 +281,11 @@ app.post("/send-otp", rateLimiter(2, 60), async (req, res) => {
   }
 });
 
-app.patch("/profile/update-password", rateLimiter(10, 150), async (req, res) => {
+app.patch("/profile/update-password",  async (req, res) => {
   try {
     const token = req.headers.authorization;
     if (!token) return res.status(401).json({ message: "No token" });
-
+console.log(req.body);
     const apiRes = await axios.patch(`${API_URL}/profile/update-password`, req.body, { headers: { Authorization: token } });
     res.json(apiRes.data);
   } catch (err) {

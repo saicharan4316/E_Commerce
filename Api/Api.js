@@ -278,7 +278,7 @@ app.get("/search", async (req, res) => {
 
 app.get("/products", async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 12;
     const offset = parseInt(req.query.offset) || 0;
     
 
@@ -322,7 +322,7 @@ app.get("/api/filter/products", async (req, res) => {
       let { minPrice, maxPrice, category, limit, offset } = req.query;
       minPrice = minPrice ? parseInt(minPrice) : 0;
       maxPrice = maxPrice && maxPrice !== "" ? parseInt(maxPrice) : null;
-      limit = limit ? parseInt(limit) : 10;
+      limit = limit ? parseInt(limit) : 12;
       offset = offset ? parseInt(offset) : 0;
 
       const params = [minPrice];

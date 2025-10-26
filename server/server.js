@@ -310,7 +310,7 @@ app.get("/logout", (req, res) => res.json({ message: "Logged out successfully" }
 // Products
 // ----------------------
 app.get("/products", async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 12;
   const offset = parseInt(req.query.offset) || 0;
   try {
     const result = await axios.get(`${API_URL}/products`, { params: { limit, offset } });
@@ -429,7 +429,7 @@ app.get("/filter/products",  async (req, res) => {
     if (!token) return res.status(401).json({ message: "Missing auth token" });
     let { minPrice, maxPrice, category, limit, offset } = req.query;
     minPrice = minPrice || 0;
-    limit = parseInt(limit) || 10;
+    limit = parseInt(limit) || 12;
     offset = parseInt(offset) || 0;
 
     let params = `?minPrice=${minPrice}&limit=${limit}&offset=${offset}`;

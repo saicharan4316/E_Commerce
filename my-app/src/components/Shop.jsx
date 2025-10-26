@@ -19,7 +19,7 @@ export default function Shop() {
   () => [...new Set((filteredProducts || []).map((p) => p.category))],
   [filteredProducts]
 );
-const limit = 10;
+const limit = 12;
   const offset = (page - 1) * limit;
   useEffect(() => {
     const fetchFilteredProducts = async () => {

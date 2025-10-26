@@ -48,7 +48,7 @@ function Deals() {
 export default function App({ user, setUser }) {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const limit = 12;
 
   useEffect(() => {
     const token = localStorage.getItem("token");

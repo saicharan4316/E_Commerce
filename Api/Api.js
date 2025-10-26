@@ -235,8 +235,8 @@ console.log(email,password);
       delete otpStore[email];
       res.json({ message: "Password updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
-      console.log(error.message);
+      res.status(500).json({ message: error });
+      console.log(error);
     }
   });
 });

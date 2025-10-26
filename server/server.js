@@ -178,7 +178,7 @@ app.get('/login_with_google/authentication',
         address:req.user.address,
         customer_id: req.user.customer_id || req.user.id
       }));
-    
+    console.log(req.user.address);
       res.redirect(`${FRONTEND_URL}/google_callback?token=${token}&user=${userData}`);
     } catch (error) {
       res.redirect(`${FRONTEND_URL}/login?error=auth_failed`);
@@ -290,7 +290,7 @@ console.log(req.body);
     const apiRes = await axios.patch(`${API_URL}/api/profile/update-password`, req.body, { headers: { Authorization: token } });
     res.json(apiRes.data);
   } catch (err) {
-    res.status(err.response?.status || 500).json({ message: err.message });
+    res.status(err.response?.status || 500).json({ message: err });
   }
 });
 

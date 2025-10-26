@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com' ;
 
 export default function ProfileEdit({ user, setUser }) {
-
+console.log(user);
   const navigate = useNavigate();
   const [form, setForm] = useState({
   name: (user && user.name) || "",

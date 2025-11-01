@@ -24,7 +24,7 @@ import  CircularProgress  from "@mui/material/CircularProgress";
       </div>
 
       <div className="profile-avatar">
-        {user.username ? user.username[0].toUpperCase() : "U"}
+        {user.name && user.name[0].toUpperCase()}
       </div>
 
       <div className="profile-row">

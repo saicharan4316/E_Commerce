@@ -17,7 +17,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 // FOR CORN JOB CHECK
-app.get('/ping', (req, res) => console.log("OK"));
+app.get('/ping', (req, res) => res.send("OK"));
 const PORT = process.env.API_PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "jwt-secret";
 

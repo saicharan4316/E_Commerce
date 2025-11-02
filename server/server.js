@@ -23,7 +23,7 @@ const API_URL = process.env.API_URL || 'https://e-commerce-api-cb8d.onrender.com
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 // FOR CORN JOB CHECK
-app.get('/ping', (req, res) => res.send("OK"));
+app.get('/ping', (req, res) => console.log("OK"));
 
 app.get('/auth/google/callback', async (req, res) => {
   res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}`);

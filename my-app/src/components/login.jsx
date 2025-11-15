@@ -29,10 +29,8 @@ export default function Login({ setUser }) {
     if (!validate()) return;
 
     try {
-      console.log(user.email,user.password);
       const response = await axios.post(`${API_URL_3000}/login`, { email: user.email.trim().toLowerCase(), password: user.password });
       const { token, user: userData } = response.data;
-      console.log(token,user);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
       setUser({ ...userData, token });
@@ -41,20 +39,105 @@ export default function Login({ setUser }) {
       toast.error(err.response?.data?.message || "Login failed");
     }
   };
+return (
+  <Box
+    component="form"
+    onSubmit={handleSubmit}
+    sx={{
+      width: 350,
+      mx: "auto",
+      mt: 8,
+      p: 4,
+      boxShadow: 3,
+      borderRadius: 2
+    }}
+  >
+    <Typography variant="h5" align="center" gutterBottom>
+      Please Login Before Using
+    </Typography>
 
-  return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ width: 350, mx: "auto", mt: 8, p: 4, boxShadow: 3, borderRadius: 2 }}>
-      <Typography variant="h5" align="center" gutterBottom>Please Login Before Using</Typography>
-      <TextField label="Email" name="email" type="email" fullWidth margin="normal" value={user.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} />
-      <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth margin="normal" value={user.password} onChange={handleChange} error={!!errors.password} helperText={errors.password}
-        InputProps={{ endAdornment: <InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end">{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment> }} />
-      <Button variant="contained" type="submit" fullWidth sx={{ mt: 2 }}>Login</Button>
-      <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-        <a href={`${API_URL_3000}/login_with_google`} style={{ textDecoration: "none", color: "#fff", backgroundColor: "#4285F4", padding: "10px 20px", borderRadius: "4px", display: "inline-block", fontWeight: "bold" }}>
-          Sign in with Google
-        </a>
+    <Box
+      sx={{
+        backgroundColor: "#f5f5f5",
+        p: 2,
+        borderRadius: 1,
+        mb: 2,
+        border: "1px solid #ddd"
+      }}
+    >
+      <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
+        🔑 Demo Login (For Recruiters)
       </Typography>
-      <Typography variant="body2" sx={{ mt: 2 }}>Not Have An Account? <a href="/signup">Signup</a></Typography>
+      <Typography variant="body2">Email: <strong>saicharan.demo@gmail.com</strong></Typography>
+      <Typography variant="body2">Password: <strong>demo@1234</strong></Typography>
+
+      <Typography
+        variant="caption"
+        color="error"
+        sx={{ display: "block", mt: 1 }}
+      >
+        * Google Login is for testing only.  
+        Please use the above credentials to access the website.
+      </Typography>
     </Box>
-  );
+
+    <TextField
+      label="Email"
+      name="email"
+      type="email"
+      fullWidth
+      margin="normal"
+      value={user.email}
+      onChange={handleChange}
+      error={!!errors.email}
+      helperText={errors.email}
+    />
+
+    <TextField
+      label="Password"
+      name="password"
+      type={showPassword ? "text" : "password"}
+      fullWidth
+      margin="normal"
+      value={user.password}
+      onChange={handleChange}
+      error={!!errors.password}
+      helperText={errors.password}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        )
+      }}
+    />
+
+    <Button variant="contained" type="submit" fullWidth sx={{ mt: 2 }}>
+      Login
+    </Button>
+
+    <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+      <a
+        href={`${API_URL_3000}/login_with_google`}
+        style={{
+          textDecoration: "none",
+          color: "#fff",
+          backgroundColor: "#4285F4",
+          padding: "10px 20px",
+          borderRadius: "4px",
+          display: "inline-block",
+          fontWeight: "bold"
+        }}
+      >
+        Sign in with Google
+      </a>
+    </Typography>
+
+    <Typography variant="body2" sx={{ mt: 2 }}>
+      Not Have An Account? <a href="/signup">Signup</a>
+    </Typography>
+  </Box>
+);
 }

@@ -12,8 +12,8 @@ import Razorpay from "razorpay";
 dotenv.config();
 // Upstash Redis Client
 const redisClient = new Redis({
-  url:process.env.UPSTASH_REDIS_REST_URL || "https://glad-wallaby-5351.upstash.io",
-  token:process.env.UPSTASH_REDIS_REST_TOKEN || "ARTnAAImcDJjNzg0N2YwOWVjOWI0ZGMwYjczMzc0MGRlZmQzNzY2Y3AyNTM1MQ",
+  url:process.env.UPSTASH_REDIS_REST_URL || "https://positive-feline-12792.upstash.io",
+  token:process.env.UPSTASH_REDIS_REST_TOKEN || "ATH4AAIncDJkZTJhZGI4ZWMyNjg0ZDVkYWZlNThkNzIwMzUzMDBiMnAyMTI3OTI",
 });
 
 const app = express();
@@ -338,19 +338,14 @@ app.get("/products/Display_product", async (req, res) => {
 app.get("/search", async (req, res) => {
   try {
     const query = req.query.query || "";
-    console.log(query);
-    console.log("---- GATEWAY /search HIT ----");
-console.log("Query from client:", req.query.query);
-console.log("Auth header received from client:", req.headers.authorization);
-console.log("All headers:", req.headers);
-console.log("GATEWAY DEBUG:", API_URL);
     const authHeader = req.headers.authorization;
-    // const cacheKey = `search:${query}`;
-    // const cachedData = await redisClient.get(cacheKey);
-    // if (cachedData) return res.json(JSON.parse(cachedData));
-    //     await redisClient.set(cacheKey, apiRes.data, { ex: 3600 });
+    const cacheKey = `search:${query}`;
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) return res.json(JSON.parse(cachedData));
     const apiRes = await axios.get(`${API_URL}/api/search?query=${query}`, { headers: { authorization: authHeader } });
-
+    if(apiRes.status===200){
+    await redisClient.set(cacheKey, apiRes.data, { ex: 3600 });
+    }
     res.json(apiRes.data);
   } catch (err) {
     console.log(err);

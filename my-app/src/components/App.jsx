@@ -79,11 +79,11 @@ const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
   return (
   <ErrorBoundary FallbackComponent={ErrorPage}>
     <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick draggable pauseOnHover />
+    {!shouldHideHeader && <Header />}
     <Routes>
       <Route path="/login" element={<Login setUser={setUser} />} />
       <Route path="/signup" element={<Signup setUser={setUser} />} />
       <Route path="/google_callback" element={<GoogleCallback setUser={setUser} />} />
-      {!shouldHideHeader && <Header />}
       <Route
         path="/*"
         element={

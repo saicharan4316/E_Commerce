@@ -34,7 +34,6 @@ export const CartProvider = ({ children, state_user }) => {
       setCart(decodedCart);
     } catch (err) {
       console.error("Failed to fetch cart:", err);
-      toast.error("Failed to fetch cart");
     }
   };
 

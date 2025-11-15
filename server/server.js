@@ -339,6 +339,11 @@ app.get("/search", async (req, res) => {
   try {
     const query = req.query.query || "";
     console.log(query);
+    console.log("---- GATEWAY /search HIT ----");
+console.log("Query from client:", req.query.query);
+console.log("Auth header received from client:", req.headers.authorization);
+console.log("All headers:", req.headers);
+console.log("GATEWAY DEBUG:", API_URL);
     const authHeader = req.headers.authorization;
     const cacheKey = `search:${query}`;
     const cachedData = await redisClient.get(cacheKey);

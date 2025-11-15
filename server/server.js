@@ -340,11 +340,17 @@ app.get("/search", async (req, res) => {
     const query = req.query.query || "";
     const authHeader = req.headers.authorization;
     const cacheKey = `search:${query}`;
-    const cachedData = await redisClient.get(cacheKey);
-    if (cachedData) return res.json(JSON.parse(cachedData));
+let cachedData = await redisClient.get(cacheKey);
+if (cachedData) {
+  try {
+    return res.json(JSON.parse(cachedData));
+  } catch (e) {
+    console.log("Invalid cache, clearing...", e);
+    await redisClient.del(cacheKey);
+  }}
     const apiRes = await axios.get(`${API_URL}/api/search?query=${query}`, { headers: { authorization: authHeader } });
     if(apiRes.status===200){
-    await redisClient.set(cacheKey, apiRes.data, { ex: 3600 });
+    await redisClient.set(cacheKey,JSON.stringify(apiRes.data), { ex: 3600 });
     }
     res.json(apiRes.data);
   } catch (err) {

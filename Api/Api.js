@@ -243,7 +243,7 @@ app.patch("/api/profile/update-password", async (req, res) => {
 
 // ----------------- PRODUCTS -----------------
 
-app.get("/search", async (req, res) => {
+app.get("/api/search", async (req, res) => {
   try {
     let query = req.query.query || "";
     query = query.trim();
@@ -270,7 +270,7 @@ app.get("/search", async (req, res) => {
     const dbRes = await db.query(sqlQuery, values);
     res.json({ products: dbRes.rows });
   } catch (err) {
- 
+ console.log(err)
     res.status(500).json({ message: "Search failed" });
   }
 });

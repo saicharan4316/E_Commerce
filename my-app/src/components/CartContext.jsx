@@ -38,9 +38,11 @@ export const CartProvider = ({ children, state_user }) => {
     }
   };
 
-  useEffect(() => {
-    if (token) fetchCart();
-  }, [token]);
+ useEffect(() => {
+  if (token && customerId) {
+    fetchCart();
+  }
+}, [token, customerId]);
 
   const addToCart = async (product) => {
   if (!isAuthenticated) {

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route,useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { CartProvider } from "./CartContext"; 
 import ResetPassword from "./Resetpassword";
@@ -49,7 +49,9 @@ export default function App({ user, setUser }) {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const limit = 12;
-
+  const location=useLocation();
+  const hideHeaderRoutes = ["/login", "/signup", "/forgot_password"];
+const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userStr = localStorage.getItem("user");
@@ -78,18 +80,16 @@ export default function App({ user, setUser }) {
   <ErrorBoundary FallbackComponent={ErrorPage}>
     <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick draggable pauseOnHover />
     <Routes>
-      
       <Route path="/login" element={<Login setUser={setUser} />} />
       <Route path="/signup" element={<Signup setUser={setUser} />} />
       <Route path="/google_callback" element={<GoogleCallback setUser={setUser} />} />
-      
-      
+      {!shouldHideHeader && <Header />}
       <Route
         path="/*"
         element={
           <ProtectedRoute user={user}>
             <CartProvider state_user={user}>
-              <Header />
+              
               <Routes>
                 <Route path="/" element={<Home products={products} page={page} setPage={setPage} />} />
                 <Route path="/home" element={<Home products={products} page={page} setPage={setPage} />} />

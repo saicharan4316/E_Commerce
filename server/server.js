@@ -338,15 +338,16 @@ app.get("/products/Display_product", async (req, res) => {
 app.get("/search", async (req, res) => {
   try {
     const query = req.query.query || "";
+    console.log(query);
     const authHeader = req.headers.authorization;
     const cacheKey = `search:${query}`;
-
     const cachedData = await redisClient.get(cacheKey);
-    if (cachedData) return res.json(cachedData);
-    const apiRes = await axios.get(`${API_URL}/search?query=${encodeURIComponent(query)}`, { headers: { Authorization: authHeader } });
+    if (cachedData) return res.json(JSON.parse(cachedData));
+    const apiRes = await axios.get(`${API_URL}/api/search?query=${query}`, { headers: { authorization: authHeader } });
     await redisClient.set(cacheKey, apiRes.data, { ex: 3600 });
     res.json(apiRes.data);
   } catch (err) {
+    console.log(err);
     res.status(err.response?.status || 500).json({ message: "Search failed" });
   }
 });

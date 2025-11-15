@@ -13,7 +13,7 @@ import "../styles/header.css";
 const API_URL_3000 = import.meta.env.VITE_API_URL_3000 || 'https://e-commerce-server-xezh.onrender.com';
 
 export default function Header() {
-  
+  console.log("component resendered")
   const [showSettings, setShowSettings] = useState(false);
   const [showmore, setShowmore] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -22,21 +22,21 @@ export default function Header() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const searchRef = useRef(null);
-
+        const token = localStorage.getItem("token");console.log(token)
   const handleLogout = () => { localStorage.clear(); navigate("/login"); };
 
   useEffect(() => {
     if (debounceTimer) clearTimeout(debounceTimer);
     if (!searchInput.trim()) { setSearchResults([]); return; }
 
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(async () => { console.log(searchInput)
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
         const res = await axios.get(`${API_URL_3000}/search`, {
           params: { query: searchInput.toLowerCase().trim() },
-          headers: { Authorization: `Bearer ${token}` }
+          headers:token ? { Authorization: `Bearer ${token}` } : {}
         });
+        
         setSearchResults(res.data.products || []);
       } catch (err) {
         alert("Search failed");
@@ -70,7 +70,7 @@ export default function Header() {
           <Link to="/orders">Orders</Link>
         </nav>
         <div style={{ position: "relative" }} ref={searchRef}>
-          <input type="text" className="search-bar" placeholder="Search" value={searchInput} onChange={e => setSearchInput(e.target.value)} autoComplete="off"/>
+          <input type="text" className="search-bar" placeholder="Search" value={searchInput} onChange={e =>{ setSearchInput(e.target.value); console.log(e.target.value)}} autoComplete="off"/>
           {searchInput.length > 0 && (
             <ul style={{ position: "absolute", top: "100%", left: 0, right: 0, backgroundColor: "white", border: "1px solid #ccc", borderTop: "none", maxHeight: "200px", overflowY: "auto", margin: 0, padding: 0, listStyle: "none", zIndex: 5 }}>
               {loading ? <li style={{ padding: "0.4rem 1rem", color: "#888" }}>Searching...</li> :
